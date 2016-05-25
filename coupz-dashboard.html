@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html ng-app="coupzDashboard">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<script src="js/jquery.js"></script>
+		<script src="js/jquery-ui.js"></script>
+   		<script src="js/bootstrap.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script src="js/angular.min.js"></script>
+		<script src="//www.parsecdn.com/js/parse-1.6.12.min.js"></script>
+		<script src="js/coupz-dashboard.js"></script>
+		<title>Products | Lumaki</title>
+	</head>
+	<body ng-controller="coupzController">
+		<div class="header">
+			<img class="headerImg" src="img/lumakiLogo.png">
+			<div class="navBar">
+				<a href="index.html" class="navLink">Home</a>
+				<a href="about.html" class="navLink">About</a>
+				<a href="products.html" class="navLink">Products</a>
+				<a href="contact.php" class="navLink">Contact Us</a>
+			</div>
+			<div class="dropdown navMenu ">
+						<button class="navLink-mobile" type="button" id="main-menu" data-toggle="dropdown">Menu</button> 
+					    <ul class="dropdown-menu" role="menu" aria-labelledby="main-menu">
+					   	  <li role="presentation"><a class="dropdown-link" role="menuitem"  tabindex="-1" href="index.html">Home</a></li>
+					      <li role="presentation"><a class="dropdown-link" role="menuitem"  tabindex="-1" href="about.html">About</a></li>
+					      <li role="presentation"><a class="dropdown-link" role="menuitem" tabindex="-1" href="products.html">Products</a></li>
+					      <li role="presentation"><a class="dropdown-link" role="menuitem" tabindex="-1" href="contact.php">Contact Us</a></li>
+					    </ul>
+			</div>
+		</div>
+
+		<nav class="navbar navbar-default nav-coupz topShadow">
+		  <div class="container-fluid">
+		    <!-- Brand and toggle get grouped for better mobile display -->
+		    <div class="navbar-header">
+		      <button ng-hide="signedIn" type="button" class="navbar-toggle btn btn-info " data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">Sign In</button>
+		      <button ng-show="signedIn" type="button" class="navbar-toggle btn btn-info " ng-click="logout()" aria-expanded="false">Sign Out</button>
+		      <a class="navbar-brand" href="#"><span style="color:#ffffff">COUPZ Dashboard - BETA</span></a>
+		      <p ng-if="signedIn" class="navbar-text ">Welcome back {{businessName}}!</p>
+		    </div>
+		    <!-- Collect the nav links, forms, and other content for toggling -->
+		    <div class="collapse navbar-collapse alignCenter" id="bs-example-navbar-collapse-1">	     
+		      <ul class="nav navbar-nav navbar-right">
+		      	<li class="nav-coupz-login">
+		      		<div id="incorrectLogin" class="alert alert-danger" style="margin:0px;">
+					  <strong>Error:</strong><span id="errorText"></span>
+					</div>
+				</li>
+		        <li ng-hide="signedIn" class="nav-coupz-login"><input id="email" class="form-control" placeholder="Email" required="required" type="email" autocomplete="on" name="name"></li>
+		        <li ng-hide="signedIn" class="nav-coupz-login"><input  id="password" class="form-control" placeholder="Password" required="required" type="password" autocomplete="on" name="name"></li>
+		        <li class="nav-coupz-login">
+		        	<div ng-hide="signedIn" class="btn-group" role="group" aria-label="...">
+					  <button type="button" class="btn btn-warning" ng-click="login()">Login</button>
+					  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#resetPassModal" >Forgot Pass?</button>
+					</div>
+					<div ng-show="signedIn" class="btn-group" role="group" aria-label="...">
+					  <button type="button" class="btn btn-info" ng-click="logout()">Sign Out</button>
+					</div>
+		        </li>
+		        <li class="nav-coupz-login">
+		        	<div ng-hide="signedIn" class="btn-group" role="group" aria-label="...">
+					  <a href="#" type="button" class="btn btn-success" data-toggle="modal" data-target="#signUpModal">Sign Up</a>
+					</div>
+		        </li> 
+		      </ul>
+		    </div><!-- /.navbar-collapse -->
+		  </div><!-- /.container-fluid -->
+		</nav>
+
+		<!-- MODALS -->
+		<div class="modal fade" id="retireModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel"><span style="color:#000000;">Retire Coupon</span></h4>
+		      </div>
+		      <div class="modal-body centerAlign">
+		        <div class="alert alert-danger" role="alert">Are you sure you wish to take this coupon down? This cannot be undone.
+		        	<!-- <br>If you retire this coupon it will appear in your retired coupons section. -->
+		        </div>
+		        <!-- <span style="color:#000000;">If you retire this coupon it will appear in your retired coupons section.</span> -->
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-primary" ng-click="retireCoupon()">Retire</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>	
+		<!-- reset password modal -->
+		<div class="modal fade" id="resetPassModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel"><span style="color:#000000;">Reset Password</span></h4>
+		      </div>
+		      <div class="modal-body centerAlign">
+		        <div class="alert alert-info" role="alert">Please Enter Email Below</div>
+		        <div id="incorrectReset" class="alert alert-danger" style="display:none;margin-bottom:5px;">
+					  <strong>Error:</strong><span id="resetErrorText"></span>
+					</div>
+		        <input id="resetEmail" class="form-control" placeholder="Email" required="required" type="email" autocomplete="on" name="name">
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-primary" ng-click="resetPass()">Send Reset</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		<!-- upload coupon modal -->
+		<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel"><span style="color:#000000;">Upload Coupon</span></h4>
+		      </div>
+		      <form style="color:#262626;">
+		      <div class="modal-body centerAlign">
+				  <div class="form-group">
+				    <label for="exampleInputFile">Image</label>
+				    <input type="file" id="inputFile" accept=".png">
+				    <p class="help-block">Must be a 500px width 400px height png file.</p>
+				  </div>
+				  <div class="form-group">
+				    <label for="uploadExpiry">Expiry Date</label>
+				    <div class="form-group">
+		                    <input class='form-control' type="text" id="datepicker" ng-model="inputDate">
+		            </div>
+				    <p class="help-block">Set when this coupon is valid till. Note: Coupon will be retired after this date.</p>
+				  </div>
+				  <div class="form-group">
+				    <label for="uploadRedeemLimit">Redeem Limit</label>
+				    <input type="number" class="form-control" id="uploadRedeemLimit" placeholder="1" min="1" ng-model="inputRedeemLimit">
+				    <p class="help-block">Set how many times you wish a customer to redeem this coupon (ex. 3)</p>
+				  </div>
+				  <div class="form-group">
+				    <label for="uploadRevenue">Revenue</label>
+				    <input type="number" class="form-control" id="uploadRevenue" placeholder="0.00" min="0" step="0.1" ng-model="inputRevenue">
+				    <p class="help-block">How much does your business make per each use of this coupon. (ex. 7.50)</p>
+				  </div>
+				  <div class="form-group">
+				    <label for="uploadSavings">Savings</label>
+				    <input type="number" class="form-control" id="uploadSavings" placeholder="0.00" min="0" step="0.1" ng-model="inputSavings">
+				    <p class="help-block">How much does the customer save per each use of this coupon. (ex. 0.50)</p>
+				  </div>
+				  <div class="form-group">
+				    <label for="uploadTextArea">Terms</label>
+				   <textarea id="uploadTextArea" class="form-control" rows="4" ng-model="inputTerms"></textarea>
+				   <p class="help-block">Define the terms for your coupon. (ex. Valid only Monday to Friday)</p>
+				  </div>
+<!-- 				  <button type="submit" class="btn btn-default" ng-click="test()">Submit</button> -->
+				
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        <button type="submit" class="btn btn-primary" ng-click="uploadCoupon()">Upload</button>
+		      </div>
+		      </form>
+		    </div>
+		  </div>
+		</div>			
+		<!-- Sign Up modal -->
+		<div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel"><span style="color:#000000;">Thank you for your interest!</span></h4>
+		      </div>
+		      <div class="modal-body centerAlign">
+		          <div class="alert alert-info" role="alert"><strong>Please email coupz@lumaki.co to sign up!</strong></div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			      </div>
+			  </div>
+		    </div>
+		  </div>
+		</div>	
+		<!-- END MODALS -->
+			<div ng-show="!signedIn" id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+			  <!-- Indicators -->
+			  <ol class="carousel-indicators">
+			    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+			    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+			    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+			  </ol>
+
+			  <!-- Wrapper for slides -->
+			  <div class="carousel-inner container-fluid" role="listbox">
+			    <div class="item active col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1">
+			      <img src="img/appPreview.png"><br><br><br><br><br><br>
+			      <div class="carousel-caption">
+			      	<h3>Make Your Coupons Portable</h3>
+			      </div>
+			    </div>
+			    <div class="item col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1">
+			    <div class="addMarginTop"><br></div>
+			      <img src="img/push.png"><br><br><br><br><br><br>
+			      <div class="carousel-caption">
+			      	<h3>Reach Your Supporters With Push Notifications</h3>
+			      </div>
+			    </div>
+			    <div class="item col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1">
+			      <img src="img/dashboard.png"><br><br><br><br><br><br>
+			      <div class="carousel-caption">
+			      	<h3>Manage Your Coupon Campains With Our Eazy To Use Self Serve Dashboard</h3>
+			      </div>
+			    </div>
+			    <div class="item col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1">
+			    	<div class="addMarginTop"><br></div>
+			      <img src="img/hello.png"><br><br><br><br><br><br>
+			      <div class="carousel-caption">
+			      	<h3>Email lumakiapps@gmail.com For More Information</h3>
+			      </div>
+			    </div>
+			    
+			  </div>
+
+			  <!-- Controls -->
+			  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+			    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+			    <span class="sr-only">Previous</span>
+			  </a>
+			  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+			    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+			    <span class="sr-only">Next</span>
+			  </a>
+			</div>
+		<!-- BEGIN DASHBOARD -->
+		<div ng-show="signedIn" class="container-fluid full-width-element-3"><!-- start main body -->
+			<!-- <div id="progressBar" class="progress">
+				  <div id="loaded" class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+				  </div>
+			</div> -->
+			<div ng-if="!live" class="alert alert-danger" role="alert">
+	    			Your account is currently set to <b>OFFLINE</b> this means users wont be able to see your business in the app. To make your account live head over to the profile section.
+	  		</div>
+			<!-- Push Notifications section -->
+			<nav class="navbar navbar-default coupz-content-header smRoundCorner" data-toggle="collapse" data-target="#push-content" aria-expanded="false">
+			  <div class="container-fluid">
+			    <!-- Brand and toggle get grouped for better mobile display -->
+			    <div class="navbar-header">
+			      <a class="navbar-brand" href="#">Push Notifications</a>
+			      
+			    </div>
+			    <button class="btn btn-info navbar-btn float-right" ng-click="getPushData()">Refresh</button>
+			  </div><!-- /.container-fluid -->
+			</nav>
+			
+			<div class="collapse container-fluid" id="push-content">
+				<div class="row">
+				  <div class="col-xs-12 col-md-12">
+				  	<div class="panel noBorder smRoundCorner">
+				  		<div class="panel-body">
+				  			<div class="col-xs-12">
+				  				<div ng-if="!lastPush"class="alert alert-success" role="alert">
+						    	<span class="lead"><b>Send your first push notification!</b></span>
+						  		</div>
+						  		<div ng-if="lastPush"class="alert alert-success" role="alert">
+						    	<span class="lead">Last push sent: {{lastPush | date:'medium'}}</span>
+						  		</div>
+				  			</div>
+				  			<div class="col-xs-12 col-sm-6 col-md-6">
+				  				<div ng-if="!allowPush && lastPush" class="alert alert-success" role="alert">
+						    	<span class="lead"><b>You can send your next push after: {{nextPush | date:'medium'}}</b></span>
+						  		</div>
+						  		<div ng-if="allowPush || !lastPush">
+					  				<input id="inputPush" class="form-control" ng-model="inputPush" placeholder="Announcement..."></input><br>
+					  				<button type="button" class="btn btn-primary" ng-click="push()">
+							    	Send Push Notification
+							  		</button>
+						  		</div>
+						  		<p class="help-block">Push Notifications must have a min of 4 days between messages sent.</p>
+				  			</div>
+				  			<div class="col-xs-12 col-sm-6 col-md-6">
+				  				<div class="alert alert-info" role="alert">
+						    	You have <span class="lead"><b>{{numSubscribers}}</b></span> subscribers
+						  		</div>
+				  			</div>
+							
+						</div>
+				  	</div>
+
+				 </div>
+		   		</div>
+			</div>
+			<!-- end push notifications section -->
+
+			<!-- analytics section -->
+			<nav class="navbar navbar-default coupz-content-header smRoundCorner" data-toggle="collapse" data-target="#analytics-content" aria-expanded="false">
+			  <div class="container-fluid">
+			    <!-- Brand and toggle get grouped for better mobile display -->
+			    <div class="navbar-header">
+			      <a class="navbar-brand" href="#">Analytics</a>
+			    </div>
+			    <button class="btn btn-info navbar-btn float-right" ng-click="getAnalyticData()">Refresh</button>
+			  </div><!-- /.container-fluid -->
+			</nav>
+
+			<div class="collapse container-fluid" id="analytics-content">
+				<div class="row">
+				  <div class="col-xs-12 col-md-6">
+				  		<div class="panel noBorder">
+				  			<div class="panel-heading dark-header smRoundCorner">Redemption Trend (last 14 days)</div>
+						  <div class="panel-body alignCenter">
+						    <div id="redemption-chart"></div>
+						  </div>
+						  <div class="panel-footer dark-header smRoundCorner">
+						  		<div id="redemptionPercent" class="largeText">{{redemptionPercent}}%</div>
+						  		change from previous week
+						  </div>
+						</div>
+				  </div>
+				  <div class="col-xs-12 col-md-6">
+				  		<div class="row">
+							  <div class="col-xs-12 col-md-12">
+							  	<div class="panel noBorder smRoundCorner">
+							  		<div class="panel-heading dark-header smRoundCorner">Your Stats</div>
+							  		<div class="panel-body alignCenter">
+							  			<div class="alert alert-success" role="alert">Total Revenue: ${{totalRevenue}}</div>
+									    <div class="alert alert-success" role="alert">Total Redemptions: {{totalRedemptions}}</div>
+									    <div class="alert alert-info" role="alert">Today's Revenue: ${{todaysRevenue}}</div>
+									    <div class="alert alert-info" role="alert">Today's Redemptions: {{todaysRedemptions}}</div>
+									</div>
+							  	</div>
+							 </div>
+					   </div>
+				  </div>
+				</div>
+			</div>
+			
+			<!-- end analytics section -->
+
+			<!-- Coupon section -->
+			<nav class="navbar navbar-default coupz-content-header smRoundCorner" data-toggle="collapse" data-target="#coupons-content" aria-expanded="false">
+			  <div class="container-fluid">
+			    <!-- Brand and toggle get grouped for better mobile display -->
+			    <div class="navbar-header">
+			      <a class="navbar-brand" href="#">My Coupons</a>
+			    </div>
+			    <button class="btn btn-info navbar-btn float-right" ng-click="getCouponData()">Refresh</button>
+			  </div><!-- /.container-fluid -->
+			</nav>
+			
+			<div class="collapse container-fluid" id="coupons-content">
+				<div class="row">
+				  <div class="col-xs-12 col-md-12">
+				  	<div class="panel noBorder smRoundCorner">
+				  		<div class="panel-heading dark-header smRoundCorner"><strong>{{couponsUsed}}/{{couponsAllowed}}</strong> coupons used</div>
+				  		<div class="panel-body alignCenter">
+				  			<div id="usedProgressBar" class="progress" style="height: 30px;">
+							  <div id="progressUsed" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+							  </div>
+							  <div id="progressLeft" class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+							  </div>
+							</div> 
+							<!-- ng-if='couponsUsed<couponsAllowed' -->
+							<button  type="button" class="btn btn-success" data-toggle="modal" data-target="#uploadModal">
+						    	Upload New Coupon
+						  	</button>
+						</div>
+				  	</div>
+
+				 </div>
+		   </div>
+				<div class="row addMarginBot" ng-repeat="coupon in coupons track by $index">
+				  <div class="col-xs-12 col-md-6">
+						<img style="width:100%;" src={{coupon.get("couponImg").url()}}>
+				  </div>
+				  <div class="col-xs-12 col-md-6">
+				  	<div class="panel noBorder">
+				  			<div class="panel-heading dark-header smRoundCorner">Details</div>
+						  <div class="panel-body alignCenter">
+						    	Posted: {{coupon.get("createdAt") | date:'medium'}}<br>
+								Expires: {{coupon.get("expires") | date:'medium'}}<br>
+								Revenue Generated: ${{coupon.get("redemptions").get("revenue")}}<br>
+								Redemptions: {{coupon.get("redemptions").get("redemptions")}}<br>
+								RedemptionLimt: {{coupon.get("redeemLimit")}}<br>
+								Terms: {{coupon.get("terms")}}
+						  </div>
+						  <button  type="button" class="btn btn-danger addMarginBot" ng-click="setRetire($index)">
+						    Retire Coupon
+						  </button>
+					</div>
+				  </div>
+				</div>
+			</div>
+			<!-- end coupon section -->
+
+			<!-- Profile section -->
+			<nav class="navbar navbar-default coupz-content-header smRoundCorner" data-toggle="collapse" data-target="#profile-content" aria-expanded="false">
+			  <div class="container-fluid">
+			    <!-- Brand and toggle get grouped for better mobile display -->
+			    <div class="navbar-header">
+			      <a class="navbar-brand" href="#">Profile</a>
+			    </div>
+			    <button class="btn btn-info navbar-btn float-right" ng-click="getUserData()">Refresh</button>
+			  </div><!-- /.container-fluid -->
+			</nav>
+			
+			<div class="collapse container-fluid" id="profile-content">
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+					  	<div class="panel noBorder smRoundCorner">
+					  		<div class="panel-body">
+					  			<div class="col-xs-12">
+						  			<div class="col-xs-12 col-sm-4 col-md-4 addMarginBot">
+						  				<img style="width:50%;-webkit-border-radius: 25px;-moz-border-radius: 25px;border-radius: 25px;margin-bottom:5px;" src={{user.get("logo").url()}}><br>
+										<button ng-if="live" class="btn btn-danger" ng-click="goOffline()" >
+								    		Go Offline
+								  		</button>
+								  		<button ng-if="!live" class="btn btn-success" ng-click="goOnline()">
+								    		<span class="lead">Go Live</span>
+								  		</button>
+						  			</div>
+
+						  			<div class="col-xs-12 col-sm-6 col-md-6  alignLeft">
+						  				<!-- Business Name: {{user.get("businessName")}}<br> -->
+						  				<address class="lead">
+										  <strong>{{user.get("businessName")}}</strong><br>
+										  {{user.get("address")}}<br>
+										  {{user.get("locationId").get("city")}}, {{user.get("locationId").get("region")}}<br>
+										  P: {{user.get("phone")}}<br>
+										  W: {{user.get("website")}}<br>
+										  Type: {{user.get("type")}}<br>
+										  Tags: {{user.get("tags").toString()}}
+										</address>
+										<p class="help-block">To make changes to business info please email lumakiapps@gmail.com</p>
+						  				
+						  			</div>
+								
+								</div>
+					  		</div>
+					 	</div>
+			   		</div>
+				</div>
+			</div>
+			<!-- end profile section -->
+		</div><!-- end main body -->
+
+
+
+		<div class="footer">
+			Copyright Lumaki 2015
+		</div>
+	</body>
+</html>

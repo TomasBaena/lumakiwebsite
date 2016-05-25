@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "_default": {
+      "link": "coups"
+    },
+    "coups": {
+      "applicationId": "0KDU1YgLuMZ2MwCtkWJd6lqpiyHwPWidcZfXQwWa"
+    }
+  }
+}

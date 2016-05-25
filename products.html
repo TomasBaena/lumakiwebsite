@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html ng-app="coupzDashboard">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  		<script src="js/jquery/1.11.3/jquery.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<script src="js/bootstrap.js"></script>
+		<title>Products | Lumaki</title>
+	</head>
+	<body ng-controller="coupzController">
+		<div class="header">
+			<img class="headerImg" src="img/lumakiLogo.png">
+			<div class="navBar">
+				<a href="index.html" class="navLink">Home</a>
+				<a href="about.html" class="navLink">About</a>
+				<a href="products.html" class="navLink">Products</a>
+				<a href="contact.php" class="navLink">Contact Us</a>
+			</div>
+			<div class="dropdown navMenu ">
+						<button class="navLink-mobile" type="button" id="main-menu" data-toggle="dropdown">Menu</button> 
+					    <ul class="dropdown-menu" role="menu" aria-labelledby="main-menu">
+					   	  <li role="presentation"><a class="dropdown-link" role="menuitem"  tabindex="-1" href="index.html">Home</a></li>
+					      <li role="presentation"><a class="dropdown-link" role="menuitem"  tabindex="-1" href="about.html">About</a></li>
+					      <li role="presentation"><a class="dropdown-link" role="menuitem" tabindex="-1" href="products.html">Products</a></li>
+					      <li role="presentation"><a class="dropdown-link" role="menuitem" tabindex="-1" href="contact.php">Contact Us</a></li>
+					    </ul>
+			</div>
+		</div>
+		<div class="product-body topShadow container-fluid"><!-- start main body -->
+			<div class="row" >
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					<div class="panel noBorder coupz-element">
+						<img src="img/appPreview.png" style="width:60%; margin-top:15px;">
+						<div class="row" >
+							<div class="col-xs-12 col-sm-12 col-md-12 lead" style="color:#ffffff;">
+								Coming soon
+							</div><br>
+							<div class="col-xs-12 col-md-3 addMarginBot">				
+									<img src="img/playstore.png" style="width:60%; margin-top:15px;"><br>
+							</div>
+							<div class="col-xs-12 col-md-3 addMarginBot">				
+									<img src="img/appstore.png" style="width:60%; margin-top:15px;"><br>
+							</div>
+							<div class="col-xs-12 col-md-3 addMarginBot" style="margin-top:15px;">				
+									<a href="coupz-dashboard.html" class="button-style"  >Dashboard</a><br>
+									
+							</div>
+							<div class="col-xs-12 col-md-3 addMarginBot" style="margin-top:15px;">	
+								<a href="coupz-terms.html" class="button-style" >Terms</a>
+							</div>
+						</div>
+					
+					</div>
+				</div>
+			</div>
+
+		</div><!-- end main body -->
+
+
+
+		<div class="footer">
+			Copyright Lumaki 2015
+		</div>
+	</body>
+</html>
