@@ -127,6 +127,6 @@
 		</div>
 		<div class="footer">
 			Copyright Lumaki 2015
-		<div>
+		</div>
 	</body>
 </html>
