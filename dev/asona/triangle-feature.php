@@ -10,15 +10,15 @@
         <!-- Wrapper for slides -->
         <div class="carousel-inner" role="listbox">
           <div class="item active">
-            <div style="position:relative;">
+<!--             <div style="position:relative;">
               <img id="triangle-play-button"src="img/play-button.png" style="width:10vw;height:10vw;position:absolute; top:45%; left:45%;" onclick="playPauseTriangle">
               <video id="triangleVideo" width="100%" onclick="playPauseTriangle()">
                 <source src="video/TRIANGLE-Made in France Movie-HD.mp4" type="video/mp4">
               </video>
-            </div>
-          <!-- <div class="embed-responsive embed-responsive-16by9">
+            </div> -->
+          <div class="embed-responsive embed-responsive-16by9">
             <iframe class="embed-responsive-item" width="560" height="315" src="https://www.youtube.com/embed/KAxEgnag8Ao?controls=0" frameborder="0" allowfullscreen></iframe>
-          </div> -->
+          </div>
             <!-- <img class="feature-img" src="img/homePageImgs/TRIANGLE-Speaker-1920x1080.jpg" alt="Triangle"> -->
 <!--               <div class="carousel-caption">
               ...
